@@ -1,0 +1,372 @@
+/* ======================= */
+/* 📌 LAYOUT STYLES */
+/* ======================= */
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+/* ======================= */
+/* 📌 SIDEBAR STYLES */
+/* ======================= */
+.sidebar {
+  width: 280px;
+  background: #2c3e50;
+  color: white;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.app-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.app-icon {
+  margin-right: 10px;
+  font-size: 1.8rem;
+}
+
+.sidebar-nav {
+  padding: 20px 0;
+  flex-grow: 1;
+}
+
+.nav-link-item {
+  color: rgba(255, 255, 255, 0.8) !important;
+  padding: 12px 20px !important;
+  margin: 2px 0;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+}
+
+.nav-link-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: white !important;
+}
+
+.nav-link-item.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: white !important;
+  border-left: 3px solid #3498db;
+}
+
+.nav-icon {
+  margin-right: 12px;
+  font-size: 1.2rem;
+}
+
+.sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  background: #3498db;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 12px;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.username {
+  font-weight: 500;
+}
+
+.user-role {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon {
+  margin-right: 8px;
+}
+
+/* ======================= */
+/* 📌 AUTH BUTTONS */
+/* ======================= */
+.auth-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 20px;
+  margin-top: auto;
+}
+
+.auth-buttons p {
+  text-align: center;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+/* ======================= */
+/* 📌 MAIN CONTENT STYLES */
+/* ======================= */
+.content {
+  margin-left: 280px; /* Match sidebar width */
+  padding: 20px;
+  width: calc(100% - 280px); /* Calculate remaining width */
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.content h2 {
+  margin: 0;
+  padding-top: 10px;
+}
+
+/* ======================= */
+/* 📌 TABLE STYLES (UPDATED) */
+/* ======================= */
+.table-container {
+  flex-grow: 1;
+  overflow: auto;
+  position: relative;
+  border: 1px solid #ddd;
+  width: 100%;
+  max-height: calc(100vh - 120px);
+  scroll-behavior: smooth;
+}
+
+/* ======================= */
+/* 📌 TABLE CONTAINER FIX */
+/* ======================= */
+.table-container {
+  position: relative;
+  overflow: auto;
+  max-height: calc(100vh - 200px); /* Adjust based on your layout */
+  width: 100%;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+}
+
+/* Table wrapper to ensure proper scrolling */
+.table-responsive-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Sticky header fix */
+.table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1020; /* Higher than other elements */
+  margin: 0;
+}
+
+/* Specific styles for dark table header */
+.table-dark thead th {
+  background-color: #212529;
+  border-bottom-width: 2px;
+  position: sticky;
+  top: 0;
+}
+
+/* Table body styling */
+.table tbody {
+  position: relative;
+}
+
+/* Ensure cells have proper borders */
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid #dee2e6;
+}
+
+/* Sticky actions column */
+.sticky-actions {
+  position: sticky;
+  right: 0;
+  background: white;
+  z-index: 1010; /* Slightly lower than header */
+  box-shadow: -2px 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.table-dark .sticky-actions {
+  background-color: #212529;
+}
+
+/* Fix for header shadow */
+.table thead::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), transparent);
+  pointer-events: none;
+}
+
+/* Scrollbar styling */
+.table-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background-color: #adb5bd;
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background-color: #f8f9fa;
+}
+
+/* Sticky Actions Column */
+.sticky-actions {
+  position: sticky;
+  right: 0;
+  background: white;
+  z-index: 60;
+  box-shadow: -2px 0 2px rgba(0, 0, 0, 0.1);
+  padding: 5px;
+  text-align: center;
+  min-width: 120px;
+}
+
+/* Scrollbar Styling */
+.table-container {
+  scrollbar-width: thin;
+  scrollbar-color: #adb5bd #f8f9fa;
+}
+
+.table-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background-color: #adb5bd;
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background-color: #f8f9fa;
+}
+
+/* Add these styles to your CSS file */
+.table-container {
+  overflow-x: auto;
+  position: relative;
+}
+
+.sticky-table {
+  min-width: 100%;
+}
+
+.sticky-header th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.sticky-actions {
+  position: sticky;
+  right: 0;
+  background-color: white;
+  z-index: 5;
+  min-width: 120px;
+}
+
+/* For dark mode tables */
+.table-dark .sticky-actions {
+  background-color: #212529; /* Bootstrap dark table background */
+}
+
+/* Ensure the sticky cells have proper borders */
+.table > :not(:first-child) {
+  border-top: none;
+}
+
+/* Fix for sticky column shadow effect */
+.sticky-actions::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sticky-actions {
+  position: sticky;
+  right: 0;
+  background-color: white;
+  z-index: 5;
+  min-width: 180px; /* Increased from 120px to fit both buttons */
+}
+
+/* For dark mode tables */
+.table-dark .sticky-actions {
+  background-color: #212529;
+}
+
+/* ======================= */
+/* 📌 TABLE CELL STYLES */
+/* ======================= */
+.counting-table td,
+.counting-table th {
+  white-space: nowrap;
+  padding: 10px;
+  text-align: center;
+  background: white;
+}
+
+.counting-table {
+  min-width: 1000px;
+  border-collapse: collapse;
+}

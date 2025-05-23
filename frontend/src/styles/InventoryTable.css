@@ -1,0 +1,63 @@
+.inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+  }
+  
+  .inventory-table th, .inventory-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .inventory-table th {
+    background: #007bff;
+    color: white;
+  }
+  
+  .inventory-table tr:nth-child(even) {
+    background: #f2f2f2;
+  }
+  
+  .add-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .edit-btn, .delete-btn {
+    border: none;
+    padding: 8px 12px;
+    margin: 2px;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 4px;
+  }
+  
+  .edit-btn {
+    background: #f1c40f;
+    color: black;
+  }
+  
+  .delete-btn {
+    background: #e74c3c;
+    color: white;
+  }
+  
+  .add-btn:hover {
+    background: #218838;
+  }
+  
+  .edit-btn:hover {
+    background: #d4ac0d;
+  }
+  
+  .delete-btn:hover {
+    background: #c0392b;
+  }
+  

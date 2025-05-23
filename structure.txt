@@ -1,0 +1,18 @@
+inventory-app/
+│── backend/                # Node.js + Express + MySQL API
+│   ├── server.js
+│   ├── db.js
+│   ├── routes/
+│   │   ├── inventoryRoutes.js
+│   ├── models/
+│   │   ├── inventoryModel.js
+│── frontend/               # React.js frontend
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── InventoryTable.js
+│   │   ├── pages/
+│   │   │   ├── InventoryPage.js
+│   │   ├── App.js
+│   │   ├── index.js
+│── package.json
+│── README.md
