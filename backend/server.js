@@ -170,38 +170,72 @@ authRoutes.post('/login', async (req, res) => {
 // Signup Endpoint
 authRoutes.post('/signup', async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    
-    // Validation
-    if (!name || name.length < 3) {
-      return res.status(400).json({ error: 'Name must be at least 3 characters' });
+    const { username, email, password } = req.body;
+
+    // Validate inputs
+    if (!username || username.length < 3) {
+      return res.status(400).json({ error: 'Username must be at least 3 characters' });
     }
-    
+
     if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
       return res.status(400).json({ error: 'Invalid email format' });
     }
 
-    if (password.length < 8) {
+    if (!password || password.length < 8) {
       return res.status(400).json({ error: 'Password must be at least 8 characters' });
     }
 
-    const [existing] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-    if (existing.length) return res.status(409).json({ error: 'Email already exists' });
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const [result] = await pool.query(
-      `INSERT INTO users (name, email, password, role) 
-       VALUES (?, ?, ?, 'counter')`,
-      [name, email, hashedPassword]
+    // Check for existing user
+    const [existing] = await pool.query(
+      'SELECT * FROM users WHERE email = ? OR username = ?', 
+      [email, username]
     );
+    
+    if (existing.length) {
+      const conflictField = existing[0].email === email ? 'email' : 'username';
+      return res.status(409).json({ 
+        error: `${conflictField} already exists`,
+        field: conflictField
+      });
+    }
+
+    // Hash password properly
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Insert into database
+    const [result] = await pool.query(
+      `INSERT INTO users (username, email, password, role) 
+       VALUES (?, ?, ?, 'user')`,
+      [username, email, hashedPassword]
+    );
+
+    // Create user response
+    const user = { 
+      id: result.insertId,
+      username,
+      email,
+      role: 'user'
+    };
+
+    // Generate JWT token
+    const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     res.status(201).json({
       message: 'User created successfully',
-      user: { id: result.insertId, name, email }
+      user,
+      token
     });
   } catch (error) {
-    console.error('Signup error:', error);
-    res.status(500).json({ error: 'Failed to create user' });
+    console.error('Signup error:', {
+      message: error.message,
+      stack: error.stack,
+      sqlMessage: error.sqlMessage
+    });
+    
+    res.status(500).json({ 
+      error: 'Registration failed',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 });
 

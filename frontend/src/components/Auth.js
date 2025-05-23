@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { FaUser, FaEnvelope, FaLock, FaSignInAlt, FaUserPlus } from "react-icons/fa";
 import "../styles/Auth.css";
 
-// API configuration
 const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 const LOGIN_ENDPOINT = `${API_BASE_URL}/auth/login`;
 const SIGNUP_ENDPOINT = `${API_BASE_URL}/auth/signup`;
@@ -31,53 +30,85 @@ const Auth = ({ type }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Update the handleSubmit function
-  // Auth.js - Updated handleSubmit function
   const handleSubmit = async (e) => {
   e.preventDefault();
   setError("");
   setLoading(true);
 
   try {
-    // Validate inputs
-    if (!formData.email || !formData.password) {
-      throw new Error("Email and password are required");
+    // Clear previous errors
+    document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+
+    // Validate inputs with better feedback
+    let errors = [];
+    if (type === "signup" && !formData.username) {
+      errors.push({ field: 'username', message: 'Username is required' });
+    }
+    if (!formData.email) {
+      errors.push({ field: 'email', message: 'Email is required' });
+    }
+    if (!formData.password) {
+      errors.push({ field: 'password', message: 'Password is required' });
     }
 
-    if (type === "signup" && !formData.username) {
-      throw new Error("Username is required");
+    if (errors.length > 0) {
+      errors.forEach(err => {
+        const element = document.querySelector(`[name="${err.field}"]`);
+        if (element) {
+          element.classList.add('is-invalid');
+          const feedback = element.parentElement.querySelector('.invalid-feedback');
+          if (feedback) feedback.textContent = err.message;
+        }
+      });
+      throw new Error('Please fix the highlighted fields');
     }
 
     const response = await axios.post(
       type === "signup" ? SIGNUP_ENDPOINT : LOGIN_ENDPOINT,
-      {
+      type === "signup" ? {
         username: formData.username,
+        email: formData.email,
+        password: formData.password
+      } : {
         email: formData.email,
         password: formData.password
       },
       {
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 10000
       }
     );
 
-    // Handle successful response
-    if (!response.data.token) {
-      throw new Error("Authentication token not received");
+    if (!response.data?.token) {
+      throw new Error('Server responded without authentication token');
     }
 
-    // Store token and update auth state
-    if (login(response.data.token)) {
-      navigate("/inventory");
-    }
+    // Store token and handle navigation
+    login(response.data.token);
+    navigate("/inventory");
 
   } catch (error) {
-    console.error("Authentication error:", error);
+    console.error("Auth Error:", {
+      name: error.name,
+      message: error.message,
+      response: error.response?.data,
+      config: error.config
+    });
+
+    // Handle field-specific errors from server
+    if (error.response?.data?.field) {
+      const element = document.querySelector(`[name="${error.response.data.field}"]`);
+      if (element) {
+        element.classList.add('is-invalid');
+        const feedback = element.parentElement.querySelector('.invalid-feedback');
+        if (feedback) feedback.textContent = error.response.data.error;
+      }
+    }
+
     setError(
       error.response?.data?.error ||
       error.message ||
-      "Authentication failed. Please check your credentials and try again."
+      'Connection error. Please try again later.'
     );
   } finally {
     setLoading(false);
@@ -122,6 +153,9 @@ const Auth = ({ type }) => {
                       minLength="3"
                       maxLength="30"
                     />
+                    <Form.Control.Feedback type="invalid" className="d-block">
+                      {/* Error messages will appear here */}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 )}
                 
