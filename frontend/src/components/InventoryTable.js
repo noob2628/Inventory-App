@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Table, Button, Modal, Form, Spinner, Alert, InputGroup, Pagination, Dropdown } from "react-bootstrap";
+import { Table, Button, Modal, Form, Spinner, Alert, InputGroup} from "react-bootstrap";
 import { format, parseISO } from "date-fns";
 import Sidebar from "./Sidebar";
 import { useAuth } from '../context/AuthContext';
@@ -21,7 +21,6 @@ const formatDate = (dateString) => {
   }
 };
 
-// Helper function to safely display values
 const displayValue = (value) => {
   if (value === null || value === undefined || value === '') {
     return 'N/A';
@@ -34,15 +33,13 @@ const InventoryTable = () => {
   const navigate = useNavigate();
   
   const [state, setState] = useState({
-    inventory: [], // All inventory items
-    filteredInventory: [], // Filtered items based on search
+    inventory: [],
+    filteredInventory: [],
     loading: false,
     error: null,
     searchQuery: "",
     showModal: false,
     editingItem: null,
-    currentPage: 1,
-    itemsPerPage: 100,
     sortConfig: {
       key: 'delivery_date',
       direction: 'desc'
@@ -65,13 +62,9 @@ const InventoryTable = () => {
     edited_by: user?.name || "Unknown"
   });
 
-  // Calculate pagination
-  const indexOfLastItem = state.currentPage * state.itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - state.itemsPerPage;
-  const currentItems = useMemo(() => {
-    return state.filteredInventory.slice(indexOfFirstItem, indexOfLastItem);
-  }, [state.filteredInventory, indexOfFirstItem, indexOfLastItem]);
-  const totalPages = Math.ceil(state.filteredInventory.length / state.itemsPerPage);
+    const currentItems = useMemo(() => {
+      return state.filteredInventory;
+    }, [state.filteredInventory]);
 
   // Sort inventory data
   const sortInventory = useCallback((data, { key, direction }) => {
@@ -168,17 +161,8 @@ const InventoryTable = () => {
       })
     );
 
-    setState(prev => ({ ...prev, filteredInventory: filtered, currentPage: 1 }));
+    setState(prev => ({ ...prev, filteredInventory: filtered }));
   }, [state.searchQuery, state.inventory]);
-
-  // Pagination functions
-  const paginate = (pageNumber) => setState(prev => ({ ...prev, currentPage: pageNumber }));
-  
-  const handleItemsPerPageChange = (items) => setState(prev => ({ 
-    ...prev, 
-    itemsPerPage: items, 
-    currentPage: 1 
-  }));
 
   // Sorting function
   const requestSort = (key) => {
@@ -365,7 +349,7 @@ const InventoryTable = () => {
 
         {state.error && <Alert variant="danger" className="mb-3">{state.error}</Alert>}
 
-        <div className="d-flex justify-content-between mb-3">
+        <div className="mb-3">
           <InputGroup style={{ width: '300px' }}>
             <Form.Control
               type="text"
@@ -378,23 +362,6 @@ const InventoryTable = () => {
               {state.loading ? <Spinner animation="border" size="sm" /> : "🔍"}
             </InputGroup.Text>
           </InputGroup>
-
-          <Dropdown>
-            <Dropdown.Toggle variant="outline-secondary">
-              Items per page: {state.itemsPerPage}
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              {[100, 200, 500, 1000].map((size) => (
-                <Dropdown.Item 
-                  key={size} 
-                  onClick={() => handleItemsPerPageChange(size)}
-                  active={state.itemsPerPage === size}
-                >
-                  {size} items
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          </Dropdown>
         </div>
         
         <div className="table-responsive-container">
@@ -568,58 +535,7 @@ const InventoryTable = () => {
             </Table>
           </div>
         </div>
-        
-        {totalPages > 1 && (
-          <div className="d-flex justify-content-center mt-3">
-            <Pagination>
-              <Pagination.First 
-                onClick={() => paginate(1)} 
-                disabled={state.currentPage === 1} 
-              />
-              <Pagination.Prev 
-                onClick={() => paginate(state.currentPage - 1)} 
-                disabled={state.currentPage === 1} 
-              />
-              
-              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                let pageNum;
-                if (totalPages <= 5) {
-                  pageNum = i + 1;
-                } else if (state.currentPage <= 3) {
-                  pageNum = i + 1;
-                } else if (state.currentPage >= totalPages - 2) {
-                  pageNum = totalPages - 4 + i;
-                } else {
-                  pageNum = state.currentPage - 2 + i;
-                }
-                
-                return (
-                  <Pagination.Item
-                    key={pageNum}
-                    active={pageNum === state.currentPage}
-                    onClick={() => paginate(pageNum)}
-                  >
-                    {pageNum}
-                  </Pagination.Item>
-                );
-              })}
-
-              <Pagination.Next 
-                onClick={() => paginate(state.currentPage + 1)} 
-                disabled={state.currentPage === totalPages} 
-              />
-              <Pagination.Last 
-                onClick={() => paginate(totalPages)} 
-                disabled={state.currentPage === totalPages} 
-              />
-            </Pagination>
-          </div>
-        )}
-
-        <div className="text-muted mt-2">
-          Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, state.filteredInventory.length)} of {state.filteredInventory.length} entries
-        </div>
-
+      
         <Modal show={state.showModal} onHide={() => setState(prev => ({ ...prev, showModal: false }))}>
           <Modal.Header closeButton>
             <Modal.Title>{state.editingItem ? "Edit Inventory Item" : "Add New Inventory Item"}</Modal.Title>
