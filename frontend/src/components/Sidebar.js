@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Button, Nav } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { FiHome, FiPackage, FiClipboard, FiRefreshCw, FiLogOut, FiLogIn, FiUserPlus } from "react-icons/fi";
+import { FiPackage, FiClipboard, FiRefreshCw, FiLogOut, FiLogIn, FiUserPlus, FiBarChart2 } from "react-icons/fi";
 import "../styles/Layout.css";
 
 const Sidebar = () => {
@@ -30,11 +30,11 @@ const Sidebar = () => {
         <Nav.Item>
           <Nav.Link 
             as={Link} 
-            to="/" 
-            active={isActive('/')}
+            to="/dashboard" 
+            active={isActive('/dashboard')}
             className="nav-link-item"
           >
-            <FiHome className="nav-icon" />
+            <FiBarChart2 className="nav-icon" />
             <span>Dashboard</span>
           </Nav.Link>
         </Nav.Item>
@@ -79,6 +79,7 @@ const Sidebar = () => {
           </>
         )}
       </Nav>
+
 
       <div className="sidebar-footer">
         {user ? (

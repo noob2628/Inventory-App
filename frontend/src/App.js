@@ -4,11 +4,11 @@ import Sidebar from "./components/Sidebar";
 import InventoryTable from "./components/InventoryTable";
 import Auth from "./components/Auth";
 import AuthProvider, { AuthContext } from "./context/AuthContext";
-import PageManager from "./components/PageManager"; // Import PageManager
-import Refill from "./components/Refill"; // ✅ Import Refill Component
-import Counting from "./components/Counting"; // ✅ Import Counting Component
+import PageManager from "./components/PageManager";
+import Refill from "./components/Refill";
+import Counting from "./components/Counting";
 import CreateFirstAdmin from './components/CreateFirstAdmin';
-
+import Dashboard from "./components/Dashboard"; // Add Dashboard import
 
 const PrivateRoute = ({ element }) => {
   const { user } = useContext(AuthContext);
@@ -20,25 +20,22 @@ const App = () => {
     <AuthProvider>
       <Router>
         <div className="app-container">
-          {/* Show Sidebar only if user is logged in */}
           <AuthContext.Consumer>
             {({ user }) => user && <Sidebar />}
           </AuthContext.Consumer>
 
           <Routes>
-            <Route path="/" element={<Navigate to="/inventory" />} />
+            <Route path="/" element={<Navigate to="/dashboard" />} /> {/* Update default redirect */}
             <Route path="/login" element={<Auth type="login" />} />
             <Route path="/signup" element={<Auth type="signup" />} />
             
             {/* Protected Routes */}
+            <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
             <Route path="/inventory" element={<PrivateRoute element={<InventoryTable />} />} />
             <Route path="/manage" element={<PrivateRoute element={<PageManager />} />} />
             <Route path="/refill" element={<PrivateRoute element={<Refill />} />} />
-            <Route path="/counting" element={<PrivateRoute element={<Counting />} />} /> {/* ✅ Added Counting Route */}
+            <Route path="/counting" element={<PrivateRoute element={<Counting />} />} />
             <Route path="/create-first-admin" element={<CreateFirstAdmin />} />
-            <Route 
-              path="/create-first-admin" 
-              element={<Navigate to="/admin/signup" replace />} />
           </Routes>
         </div>
       </Router>
